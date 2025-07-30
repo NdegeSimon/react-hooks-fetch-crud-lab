@@ -1,14 +1,21 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 function QuestionItem({ question, onDelete, onUpdateCorrectAnswer }) {
   const { id, prompt, answers, correctIndex } = question;
+  const [localCorrectIndex, setLocalCorrectIndex] = useState(correctIndex);
+
+  useEffect(() => {
+    setLocalCorrectIndex(correctIndex);
+  }, [correctIndex]);
 
   const handleDelete = () => {
     onDelete(id);
   };
 
   const handleCorrectAnswerChange = (e) => {
-    onUpdateCorrectAnswer(id, e.target.value);
+    const newIndex = e.target.value;
+    setLocalCorrectIndex(newIndex);
+    onUpdateCorrectAnswer(id, newIndex);
   };
 
   return (
@@ -18,7 +25,7 @@ function QuestionItem({ question, onDelete, onUpdateCorrectAnswer }) {
       <label>
         Correct Answer:
         <select
-          value={correctIndex}
+          value={localCorrectIndex}
           onChange={handleCorrectAnswerChange}
           aria-label="Correct Answer"
         >
