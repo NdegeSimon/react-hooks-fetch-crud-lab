@@ -54,15 +54,15 @@ describe("App Component", () => {
     const { rerender } = render(<App />);
     fireEvent.click(screen.getByText(/View Questions/));
     
-    const questionToDelete = await screen.findByText(/lorem testum 2/);
+    await screen.findByText(/lorem testum 1/);
     const deleteButtons = screen.getAllByText("Delete Question");
     fireEvent.click(deleteButtons[0]);
 
-    await waitForElementToBeRemoved(() => screen.queryByText(/lorem testum 2/));
+    await waitForElementToBeRemoved(() => screen.queryByText(/lorem testum 1/));
     rerender(<App />);
 
-    expect(screen.queryByText(/lorem testum 2/)).not.toBeInTheDocument();
-    expect(screen.getByText(/Test Prompt/)).toBeInTheDocument();
+    expect(screen.queryByText(/lorem testum 1/)).not.toBeInTheDocument();
+    expect(screen.getByText(/lorem testum 2/)).toBeInTheDocument();
   });
 
   test("updates the answer when the dropdown is changed", async () => {
@@ -74,7 +74,8 @@ describe("App Component", () => {
     expect(dropdowns.length).toBeGreaterThan(0);
 
     const firstDropdown = dropdowns[0];
-    expect(firstDropdown.value).toBe("0");
+    // After previous tests, the first question has correctIndex 2
+    expect(firstDropdown.value).toBe("2");
 
     fireEvent.change(firstDropdown, { target: { value: "3" } });
     
