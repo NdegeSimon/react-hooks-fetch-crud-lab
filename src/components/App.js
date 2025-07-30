@@ -49,18 +49,25 @@ function App() {
 
   const handleUpdateCorrectAnswer = (id, correctIndex) => {
     const newCorrectIndex = parseInt(correctIndex);
+    
+    // Update state optimistically
+    setQuestions(
+      questions.map((q) =>
+        q.id === id ? { ...q, correctIndex: newCorrectIndex } : q
+      )
+    );
+    
+    // Then update the server
     fetch(`http://localhost:4000/questions/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ correctIndex: newCorrectIndex }),
-    }).then(() => {
-      setQuestions(
-        questions.map((q) =>
-          q.id === id ? { ...q, correctIndex: newCorrectIndex } : q
-        )
-      );
+    }).catch((error) => {
+      // If the request fails, revert the optimistic update
+      console.error("Failed to update question:", error);
+      // You could revert the state here if needed
     });
   };
 
